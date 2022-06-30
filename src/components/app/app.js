@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 
 import AppHeader from "../app-header";
 import SearchPanel from "../search-panel";
@@ -9,15 +9,30 @@ import PostAddFrom from "../post-add-form";
 import './app.css'
 import './index.css'
 
-const App = () => {
+export default class App extends Component {
+    constructor (props) {
+        super(props)
+        this.state = {
+            data : [
+                {label: 'Going to learn JS', important: true, id: 'qws', color: 'white'},
+                {label: 'I am learning React', important: false, id: 'dsa', color: 'white'},
+                {label: 'I need a break...', important: false, id: 'asd', color: 'white'}
+            ]
+        }
+        this.deleteItem = this.deleteItem.bind(this);
+    }
+    
+    deleteItem (id) {
+        this.setState(({data}) => {
+            const index = data.findIndex(elem => elem.id === id)            
+            const newArr = [...data.slice(0, index), ...data.slice(index + 1)];
+            return {
+                data: newArr
+            }
+        });
+    }
 
-    const data = [
-        {label: 'Going to learn JS', important: true, id: 'qws'},
-        {label: 'I am learning React', important: false, id: 'dsa'},
-        {label: 'I need a break...', important: false, id: 'asd'}
-    ];
-
-
+   render () {
     return (
         <div className="app">
             <AppHeader/>
@@ -25,9 +40,11 @@ const App = () => {
                 <SearchPanel/>
                 <PostStatusFilter/>
             </div>
-            <PostList posts={data}/>
+            <PostList posts={this.state.data}
+            onDelete={this.deleteItem}
+            />
             <PostAddFrom/>
         </div>
     )
+   }
 }
-export default App;
